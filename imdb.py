@@ -62,20 +62,19 @@ def clean_data(data):
 clean_data = type_parse(clean_data(data_list))
 
 test_list = []
-for x in range(1227,2227):
+for x in range(1000):
     test_list.append(clean_data[x])
-
 id_list = []
 for x in test_list:
     id_list.append(x[0])
-omdb_api = "&apikey=a48aa8ff"
+omdb_api = "&apikey=550b8e56"
 url = 'http://www.omdbapi.com/'
 
 
 ## key2 = d2be49ea
 ## key3 = 6ee79faf
 ## key4 = a48aa8ff
-## key5 =
+## key5 = 550b8e56
 ## key5 =
 
 ## Calls the omDB API with an imDB id number and returns the movie info in a json file
@@ -123,13 +122,22 @@ def collect_and_clean(data):
     return movie_list
 
 ## Lists for every time collect_and_clean function is called
-clean_movie_list4
-clean_movie_list3
-clean_movie_list2
-clean_move_list
-nlist1
-nlist2
+clean_movie_list4 = collect_and_clean(id_list)
+clean_movie_list3 = collect_and_clean(id_list)
+clean_movie_list2 = collect_and_clean(id_list)
+clean_move_list = collect_and_clean(id_list)
+nlist1 = collect_and_clean(id_list)
+nlist2 = collect_and_clean(id_list)
+nlist3 = collect_and_clean(id_list)
+nlist4 = collect_and_clean(id_list)
+nlist5 = collect_and_clean(id_list)
 
-## Final collection of lists
-big_list = clean_move_list + clean_movie_list2 + clean_movie_list3 + clean_movie_list4 + nlist1 + nlist2
-big_list
+## Final collection of dictionaries
+big_list = clean_move_list + clean_movie_list2 + clean_movie_list3 + clean_movie_list4 + nlist1 + nlist2 + nlist3 + nlist4 + nlist5
+## Removing errors
+for item in big_list:
+    if "Error getting data." or "Error: Daily request limit reached!" in item:
+        big_list.remove(item)
+
+## Pandas df
+pd.DataFrame(big_list, columns = ['Title','Year','Released','Genre','Director','Actors','BoxOffice','Production'])
