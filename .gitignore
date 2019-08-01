@@ -119,3 +119,6 @@ Thumbs.db
 
 # config file
 config.py
+
+# large tsv file
+data.tsv
