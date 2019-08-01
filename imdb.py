@@ -4,7 +4,7 @@ import time
 
 ## Reading the tsv file from imDB
 data_list = []
-with open('data.tsv') as data:
+with open('/home/xristsos/flatiron/projects/proj resources/data.tsv') as data:
     tsvreader = csv.reader(data, delimiter='\t')
     for line in tsvreader:
         data_list.append(line)
@@ -60,28 +60,17 @@ def clean_data(data):
 ## omDB only returns 1 movie at a time and allows 1000 requests per day
 ## To get the most out of the imDB tsv, the code below breaks up the clean_list
 clean_data = type_parse(clean_data(data_list))
-
 test_list = []
 for x in range(1000):
     test_list.append(clean_data[x])
 id_list = []
 for x in test_list:
     id_list.append(x[0])
-omdb_api = "&apikey=550b8e56"
-url = 'http://www.omdbapi.com/'
-
-
-## key2 = d2be49ea
-## key3 = 6ee79faf
-## key4 = a48aa8ff
-## key5 = 550b8e56
-## key5 =
 
 ## Calls the omDB API with an imDB id number and returns the movie info in a json file
 def _omdb(url, id_, api):
     response = requests.get(url + '?i=' + id_ + api)
     data = response.json()
-
     return data
 
 ## Takes in a list of imDB movie IDs
@@ -90,6 +79,12 @@ def collect_and_clean(data):
     movie_list = []
     for movie in data:
         movie_list.append(_omdb(url, movie, omdb_api))
+    for movie in movie_list:
+        try:
+            if movie['Genre'] == "N/A":
+                movie_list.remove(movie)
+        except:
+            movie_list.remove(movie)
     for movie in movie_list:
         try:
             movie['Year'] = int(movie['Year'])
@@ -118,26 +113,44 @@ def collect_and_clean(data):
                 continue
         except:
             movie_list.remove(movie)
-    time.sleep(2)
+    time.sleep(5)
     return movie_list
 
-## Lists for every time collect_and_clean function is called
-clean_movie_list4 = collect_and_clean(id_list)
-clean_movie_list3 = collect_and_clean(id_list)
-clean_movie_list2 = collect_and_clean(id_list)
-clean_move_list = collect_and_clean(id_list)
-nlist1 = collect_and_clean(id_list)
-nlist2 = collect_and_clean(id_list)
-nlist3 = collect_and_clean(id_list)
-nlist4 = collect_and_clean(id_list)
-nlist5 = collect_and_clean(id_list)
+## Sending the info into the database
+import requests
+import mysql.connector
+from mysql.connector import errorcode
+import json
 
-## Final collection of dictionaries
-big_list = clean_move_list + clean_movie_list2 + clean_movie_list3 + clean_movie_list4 + nlist1 + nlist2 + nlist3 + nlist4 + nlist5
-## Removing errors
-for item in big_list:
-    if "Error getting data." or "Error: Daily request limit reached!" in item:
-        big_list.remove(item)
+## Connect to DB server on AWS
+cnx = mysql.connector .connect(
+    host = config.host,
+    user = config.user,
+    passwd = config.passwd)
+cursor = cnx.cursor()
 
-## Pandas df
-pd.DataFrame(big_list, columns = ['Title','Year','Released','Genre','Director','Actors','BoxOffice','Production'])
+#create table
+cursor.execute(
+              """CREATE TABLE microflix.imdb (
+              id int AUTO_INCREMENT,
+              movie varchar(250),
+              actors varchar(1000),
+              released varchar(50),
+              genre varchar(500),
+              boxoffice varchar(500),
+              director varchar(500),
+              PRIMARY KEY (id)
+              )""")
+
+#inserting movies into the table
+def insert_movies(movies):
+    for movie in movies:
+        if movie['Response'] == 'False':
+            continue
+        else:
+            sql_add = ("""INSERT INTO microflix.imdb (movie, actors, released, genre, boxoffice, director) VALUES (%s, %s, %s, %s, %s, %s)""")
+            data_add = (movie['Title'], movie['Actors'], movie['Released'], movie['Genre'], movie['BoxOffice'], movie['Director'])
+            cursor.execute(sql_add, data_add)
+    cursor.close()
+    cnx.commit()
+    return
