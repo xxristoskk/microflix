@@ -1,15 +1,18 @@
 import requests
 import csv
 import time
+import config
 
-## Reading the tsv file from imDB
+url = "http://www.omdbapi.com/"
+omdb_api = config.omdb_api
+
+## Reading the tsv file from imDB containing over 6 million titles
 data_list = []
 with open('/home/xristsos/flatiron/projects/proj resources/data.tsv') as data:
     tsvreader = csv.reader(data, delimiter='\t')
     for line in tsvreader:
         data_list.append(line)
 
-# Cleaning and parsing functions to return relavent info from the tsv file
 # Function that returns items that are only movies
 def type_parse(data):
     movie_list = []
@@ -57,100 +60,51 @@ def clean_data(data):
             continue
     return clean_list
 
-## omDB only returns 1 movie at a time and allows 1000 requests per day
-## To get the most out of the imDB tsv, the code below breaks up the clean_list
+## Create a clean and parsed data list
 clean_data = type_parse(clean_data(data_list))
-test_list = []
-for x in range(1000):
-    test_list.append(clean_data[x])
+
+## Collect all the movie IDs in a list
+temp_list = []
+for x in range(12000):
+    temp_list.append(clean_data[x])
 id_list = []
-for x in test_list:
+for x in temp_list:
     id_list.append(x[0])
 
-## Calls the omDB API with an imDB id number and returns the movie info in a json file
+## Calls the omDB API with an imDB movie id and returns the movie info in a json file
 def _omdb(url, id_, api):
     response = requests.get(url + '?i=' + id_ + api)
     data = response.json()
     return data
 
-## Takes in a list of imDB movie IDs
-## Returns a list of dictionaries
+## Takes in a list of imdb IDs and returns a list of dictionaries for each movie
 def collect_and_clean(data):
     movie_list = []
     for movie in data:
         movie_list.append(_omdb(url, movie, omdb_api))
     for movie in movie_list:
+        ## Checks if any dictionary keys are missing and removes item from the list
         try:
-            if movie['Genre'] == "N/A":
-                movie_list.remove(movie)
-        except:
-            movie_list.remove(movie)
-    for movie in movie_list:
-        try:
+            ## Change years from strings to integers
             movie['Year'] = int(movie['Year'])
-        except:
-            movie_list.remove(movie)
-        try:
             if movie['Year'] >= 2005 and movie['Year'] <= 2019:
                 continue
             else:
                 movie_list.remove(movie)
-        except:
-            movie_list.remove(movie)
-    for movie in movie_list:
-        try:
+            ## Remove the movie if it has no genre data
+            if movie['Genre'] == "N/A":
+                movie_list.remove(movie)
+            ## Remove movie if it is not in English
             if 'English' not in movie['Language']:
                 movie_list.remove(movie)
             else:
                 continue
-        except:
-            movie_list.remove(movie)
-    for movie in movie_list:
-        try:
+            ## Remove the movie if it has not been released
             if movie['Released'] == 'N/A':
                 movie_list.remove(movie)
             else:
                 continue
         except:
             movie_list.remove(movie)
-    time.sleep(5)
+    time.sleep(2)
     return movie_list
-
-## Sending the info into the database
-import requests
-import mysql.connector
-from mysql.connector import errorcode
-import json
-
-## Connect to DB server on AWS
-cnx = mysql.connector .connect(
-    host = config.host,
-    user = config.user,
-    passwd = config.passwd)
-cursor = cnx.cursor()
-
-#create table
-cursor.execute(
-              """CREATE TABLE microflix.imdb (
-              id int AUTO_INCREMENT,
-              movie varchar(250),
-              actors varchar(1000),
-              released varchar(50),
-              genre varchar(500),
-              boxoffice varchar(500),
-              director varchar(500),
-              PRIMARY KEY (id)
-              )""")
-
-#inserting movies into the table
-def insert_movies(movies):
-    for movie in movies:
-        if movie['Response'] == 'False':
-            continue
-        else:
-            sql_add = ("""INSERT INTO microflix.imdb (movie, actors, released, genre, boxoffice, director) VALUES (%s, %s, %s, %s, %s, %s)""")
-            data_add = (movie['Title'], movie['Actors'], movie['Released'], movie['Genre'], movie['BoxOffice'], movie['Director'])
-            cursor.execute(sql_add, data_add)
-    cursor.close()
-    cnx.commit()
-    return
