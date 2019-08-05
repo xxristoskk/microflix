@@ -47,10 +47,11 @@ Most popular actors under action and adventure as well:
 Good producers needed:
 ![Top_producer](https://github.com/xxristoskk/microflix/blob/master/directorpop1.png)
 
-Recommendations:
-Adventure film would possess broad appeal
-Recruit a small stable of popular adventure genre stars
-For directors, we have a bit more flexibility, one from the popularity list would advance our goal in creating additional buzz
+**Recommendations:
+
+- Adventure film would possess broad appeal
+- Recruit a small stable of popular adventure genre stars
+- For directors, we have a bit more flexibility, one from the popularity list would advance our goal in creating additional buzz
 
 
 
