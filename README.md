@@ -42,9 +42,12 @@ Action market share is peaking - Adventure market share is rising
 
 Most popular actors under action and adventure as well:
 
+
 ![genre_popular](https://github.com/xxristoskk/microflix/blob/master/bar%20chart.png)
 
 Good producers needed:
+
+
 ![Top_producer](https://github.com/xxristoskk/microflix/blob/master/directorpop1.png)
 
 **Recommendations:**
