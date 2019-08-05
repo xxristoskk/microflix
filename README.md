@@ -14,3 +14,6 @@ Our focus is to generate buzz and engagment, with the understanding that the com
 The Data Science Students in charge: Fabrice - Hamilton - Xristos
 
 Our codes and presentation are saved in the folder and should help any third party to replicate our works.
+
+!(https://github.com/xxristoskk/microflix/blob/master/bar%20chart.png)
+
