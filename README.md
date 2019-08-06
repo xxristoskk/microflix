@@ -7,7 +7,7 @@
 
 Our codes and presentation are saved in the folder and should help any third party to replicate our works.
 
-!(https://github.com/xxristoskk/microflix/blob/master/bar%20chart.png)
+<img src="https://github.com/xxristoskk/microflix/blob/master/imgs/bar%20chart.png">
 
 __________________________________________________________________________________________________________________________________
 
@@ -38,17 +38,17 @@ http://www.omdbapi.com
 **Findings:**
 Action market share is peaking - Adventure market share is rising
 
-![yearly_market](https://github.com/xxristoskk/microflix/blob/master/market.jpg)
+<img src="https://github.com/xxristoskk/microflix/blob/master/imgs/market.jpg">
 
 Most popular actors under action and adventure as well:
 
 
-![genre_popular](https://github.com/xxristoskk/microflix/blob/master/bar%20chart.png)
+<img src="https://github.com/xxristoskk/microflix/blob/master/imgs/bar%20chart.png">
 
 Good producers needed:
 
 
-![Top_producer](https://github.com/xxristoskk/microflix/blob/master/directorpop1.png)
+<img src="https://github.com/xxristoskk/microflix/blob/master/imgs/directorpop1.png">
 
 **Recommendations:**
 
