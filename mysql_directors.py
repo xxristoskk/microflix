@@ -2,15 +2,15 @@
 import requests
 import mysql.connector
 from mysql.connector import errorcode
-import json
+import config
 import matplotlib.pyplot as plt
 %matplotlib inline
 
 ## Connect to DB server on AWS
 cnx = mysql.connector .connect(
-    host = 'flatiron.clnl5ba3xlkw.us-east-2.rds.amazonaws.com',
-    user = 'xristos2',
-    passwd = '')
+    host = config.host,
+    user = config.user,
+    passwd = config.passwd)
 cursor = cnx.cursor()
 
 #create table
