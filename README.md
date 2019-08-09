@@ -7,8 +7,6 @@
 
 Our codes and presentation are saved in the folder and should help any third party to replicate our works.
 
-<img src="https://github.com/xxristoskk/microflix/blob/master/imgs/bar%20chart.png">
-
 __________________________________________________________________________________________________________________________________
 
 **Project Presentation:**
